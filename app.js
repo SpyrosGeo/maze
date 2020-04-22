@@ -6,6 +6,7 @@ const { world } = engine
 const width = 800;
 const height = 800;
 const cells = 3;
+const unitLength = width / cells;
 
 const render = Render.create({
     element: document.body,
@@ -13,7 +14,7 @@ const render = Render.create({
     options: {
         width,
         height,
-        wireframes: false
+        // wireframes: false
     }
 
 });
@@ -116,8 +117,31 @@ const navigateMaze = (row, column) => {
             horizontals[row][column]= true;
         }
 
+        navigateMaze(nextRow,nextColumn);
+
     }
     //visit that next cell
+
 }
 
-navigateMaze(1, 1);
+navigateMaze(startRow, startColumn);
+
+horizontals.forEach((row,rowIndex)=>{
+    console.log(row);
+    row.forEach((open,columnIndex)=>{
+        if(open){
+            return
+        }
+        const wall = Bodies.rectangle(
+            columnIndex *unitLength +unitLength/2,
+            rowIndex * unitLength + unitLength,
+            unitLength,
+            10,
+            {
+                isStatic:true,
+            }
+        );
+        World.add(world,wall)
+    });
+
+});
