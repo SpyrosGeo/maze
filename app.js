@@ -5,7 +5,7 @@ const engine = Engine.create();
 const { world } = engine
 const width = 800;
 const height = 800;
-const cells = 3;
+const cells = 5;
 const unitLength = width / cells;
 
 const render = Render.create({
@@ -111,13 +111,13 @@ const navigateMaze = (row, column) => {
             verticals[row][column - 1] = true;
         } else if (direction === "right") {
             verticals[row][column] = true;
-        }else if (direction==="up"){
-            horizontals[row-1][column] =true;
-        }else if (direction ==="down"){
-            horizontals[row][column]= true;
+        } else if (direction === "up") {
+            horizontals[row - 1][column] = true;
+        } else if (direction === "down") {
+            horizontals[row][column] = true;
         }
 
-        navigateMaze(nextRow,nextColumn);
+        navigateMaze(nextRow, nextColumn);
 
     }
     //visit that next cell
@@ -126,22 +126,40 @@ const navigateMaze = (row, column) => {
 
 navigateMaze(startRow, startColumn);
 
-horizontals.forEach((row,rowIndex)=>{
-    console.log(row);
-    row.forEach((open,columnIndex)=>{
-        if(open){
+horizontals.forEach((row, rowIndex) => {
+    // console.log(row);
+    row.forEach((open, columnIndex) => {
+        if (open) {
             return
         }
         const wall = Bodies.rectangle(
-            columnIndex *unitLength +unitLength/2,
+            columnIndex * unitLength + unitLength / 2,
             rowIndex * unitLength + unitLength,
             unitLength,
             10,
             {
-                isStatic:true,
+                isStatic: true,
             }
         );
-        World.add(world,wall)
+        World.add(world, wall)
     });
 
+});
+
+verticals.forEach((row, rowIndex) => {
+    row.forEach((open, columnIndex) => {
+        if (open) {
+            return;
+        }
+        const wall = Bodies.rectangle(
+            columnIndex * unitLength + unitLength,
+            rowIndex * unitLength + unitLength / 2,
+            10,
+            unitLength,
+            {
+                isStatic: true,
+            }
+        );
+        World.add(world, wall)
+    });
 });
