@@ -42,6 +42,19 @@ const walls = [
 World.add(world, walls);
 
 //Maze generation
+
+const shuffle = (arr) => {
+    let counter = arr.length;
+    while (counter > 0) {
+        const index = Math.floor(Math.random() * counter)
+
+        counter--;
+        const temp = arr[counter];
+        arr[counter] = arr[index]
+        arr[index] = temp;
+    }
+    return arr;
+};
 const grid = Array(cells)
     .fill(null)
     .map(() => Array(cells).fill(false))
@@ -54,11 +67,54 @@ const horizontals = Array(cells - 1)
     .fill(null)
     .map(() => Array(cells).fill(false))
 
-const startRow = Math.floor(Math.random()*cells)
-const startColumn = Math.floor(Math.random()*cells)
+const startRow = Math.floor(Math.random() * cells)
+const startColumn = Math.floor(Math.random() * cells)
 
-const navigateMaze = (row,column)=>{
+const navigateMaze = (row, column) => {
+    //check if the cell has been visited
+    if (grid[row][column]) {
+        return;
+    }
+    //mark the cell as visited
+    grid[row][column] = true;
 
+    //assemble randomy-ordered list of neighbors
+    const neighbors = shuffle([
+        //above cell
+        [row - 1, column, 'up'],
+        //cell on the right
+        [row, column + 1, 'right'],
+        //cell below
+        [row + 1, column, 'down'],
+        //cell on the left
+        [row, column - 1, 'left']
+    ])
+    //for each neighbor..
+    for (let neighbor of neighbors) {
+        const [nextRow, nextColumn, direction] = neighbor;
+
+        //see if neighbor is out of bounds
+        if (nextRow < 0 || nextRow >= cells || nextColumn < 0 || nextColumn >= cells) {
+            continue;
+
+
+        }
+
+
+        //if we have visited neighbor continue to next
+        if (grid[nextRow][nextColumn]) {
+            continue;
+        }
+        //remove wall from horizontals or verticals
+        if (direction === "left") {
+            verticals[row][column - 1] = true;
+        } else if (direction === "right") {
+            verticals[row][column] = true;
+        }
+
+    }
+    //visit that next cell
 }
 
-navigateMaze(startRow,startColumn)
+navigateMaze(1, 1);
+console.log(verticals)
